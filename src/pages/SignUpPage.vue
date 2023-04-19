@@ -1,5 +1,10 @@
 <script setup>
+import {ref} from "vue";
 
+const showPassword=ref(false)
+function showHide() {
+  showPassword.value=!showPassword.value
+}
 </script>
 <template>
   <div class="sign-up-page-container">
@@ -12,11 +17,18 @@
           <label>
             E-mail
           </label>
-          <input type="text" placeholder="Type your email"/>
+          <div class="sign-up-form-email-input">
+            <i class="fa-solid fa-user"/>
+            <input type="text" placeholder="Type your email"/>
+          </div>
         </div>
         <div class="sign-up-password-div">
           <label>Password</label>
-          <input type="password" placeholder="Type your password"/>
+          <div class="sign-up-form-password-input">
+            <i class="fa-solid fa-key"/>
+            <input :type="showPassword ? 'text' : 'password'" placeholder="Type your password"/>
+            <i class="fa-solid" :class="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}" @click="showHide"/>
+          </div>
         </div>
         <button class="sign-up-button">SIGN UP</button>
         <div class="sign-up-page-login-link-div">
@@ -69,16 +81,23 @@
   margin-bottom: 5px;
   color: #333333;
 }
-.sign-up-email-div input{
+.sign-up-form-email-input input{
   border-bottom: 2px solid #e6e6e6;
   border-top: 0;
   border-left: 0;
   border-right: 0;
   border-radius: 3px;
-  padding: 10px;
+  padding: 10px 10px 10px 35px;
   font-size: 15px;
+  width: 100%;
+  color: #666666;
 }
-.sign-up-email-div input:focus{
+.sign-up-form-email-input i{
+  position: absolute;
+  padding: 10px;
+  color: #666666;
+}
+.sign-up-form-email-input input:focus{
   outline: transparent;
 }
 .sign-up-password-div{
@@ -86,7 +105,7 @@
   flex-direction: column;
   margin-top: 20px;
 }
-.sign-up-password-div input:focus{
+.sign-up-form-password-input input:focus{
   outline: transparent;
 }
 .sign-up-password-div label{
@@ -94,14 +113,24 @@
   margin-bottom: 5px;
   color: #333333;
 }
-.sign-up-password-div input{
+.sign-up-form-password-input input{
   border-bottom: 2px solid #e6e6e6;
   border-top: 0;
   border-left: 0;
   border-right: 0;
   border-radius: 3px;
-  padding: 10px;
+  padding: 10px 35px 10px 35px;
   font-size: 15px;
+  width: 100%;
+  color: #666666;
+}
+.sign-up-form-password-input i:nth-child(3){
+  right: 0;
+}
+.sign-up-form-password-input i{
+  position: absolute;
+  padding: 10px;
+  color: #666666;
 }
 .sign-up-button{
   background: linear-gradient(to right, #B1E1FF, #AFB4FF, #9C9EFE, #A66CFF);
@@ -124,5 +153,14 @@
 .sign-up-page-login-link-div a{
   color: #333333;
   text-decoration: none;
+}
+.sign-up-form-email-input{
+  display: flex;
+  flex-direction: row;
+}
+.sign-up-form-password-input{
+  display: flex;
+  flex-direction: row;
+  position: relative;
 }
 </style>

@@ -1,5 +1,13 @@
 <script setup>
+import {ref} from "vue";
 
+const showPassword=ref(false)
+function showHide() {
+showPassword.value=!showPassword.value
+}
+function callLoginPostAPI(){
+  fetch('')
+}
 </script>
 
 <template>
@@ -10,15 +18,16 @@
         <div class="login-form-input-email-div">
           <label>E-mail</label>
           <div class="login-form-email-input">
-            <i class="fa-solid fa-user"></i>
-            <input type="text" placeholder='Type your email'/>
+            <i class="fa-solid fa-user"/>
+            <input type="email" placeholder='Type your email'/>
           </div>
         </div>
         <div class="login-form-input-password-div">
           <label>Password</label>
           <div class="login-form-password-input">
-            <i class="fa-solid fa-key"></i>
-            <input type="password" placeholder='Type your password'/>
+            <i class="fa-solid fa-key"/>
+            <input :type="showPassword ? 'text' : 'password'" placeholder='Type your password'/>
+            <i class="fa-solid" :class="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}" @click="showHide"/>
           </div>
         </div>
         <div class="login-form-forgot-password">
@@ -35,6 +44,9 @@
 </template>
 
 <style scoped>
+.login-form-password-input i:nth-child(3) {
+  right: 0;
+}
 
 .login-page-container {
   width: 100%;
@@ -81,6 +93,7 @@
 .login-form-email-input {
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 
 .login-form-email-input i {
@@ -98,6 +111,12 @@
 
 .login-form-password-input input:focus {
   outline: transparent;
+}
+
+.login-form-password-input {
+  display: flex;
+  flex-direction: row;
+  position: relative;
 }
 
 .login-form-input-password-div {
@@ -118,11 +137,10 @@
   border-left: 0;
   border-right: 0;
   border-radius: 3px;
-  padding: 10px;
   font-size: 15px;
-  text-indent: 25px;
   width: 100%;
-  color: #666666
+  color: #666666;
+  padding: 10px 10px 10px 35px;
 }
 
 .login-form-forgot-password {
@@ -138,13 +156,13 @@
   border-left: 0;
   border-right: 0;
   border-radius: 3px;
-  padding: 10px;
+  padding: 10px 35px 10px 35px;
   font-size: 15px;
   width: 100%;
-  text-indent: 25px;
   color: #666666
 }
-.login-form-password-input i{
+
+.login-form-password-input i {
   position: absolute;
   padding: 10px;
   font-size: 15px;
