@@ -16,10 +16,10 @@ function callLoginPostAPI(){
       <form class="login-form-div">
         <h1>Login</h1>
         <div class="login-form-input-email-div">
-          <label>E-mail</label>
+          <label>Username</label>
           <div class="login-form-email-input">
             <i class="fa-solid fa-user"/>
-            <input type="email" placeholder='Type your email'/>
+            <input type="text" placeholder='Type your username'/>
           </div>
         </div>
         <div class="login-form-input-password-div">
