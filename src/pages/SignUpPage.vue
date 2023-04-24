@@ -1,22 +1,16 @@
 <script setup>
-import {ref, watch} from "vue";
+import {ref, watch, inject} from "vue";
 
-const username = ref('')
+const router = inject('router')
+const email = ref('')
 const password = ref('')
-const name = ref('')
-const surname = ref('')
+const fullName = ref('')
 const showPassword = ref(false)
 const errorMessage = ref('')
 
 function showHide() {
   showPassword.value = !showPassword.value
 }
-
-watch([username, password], () => {
-  console.log('watch')
-  errorMessage.value = ''
-})
-
 
 function callSignUpPostAPI() {
   fetch('http://localhost:1234/user', {
@@ -25,13 +19,13 @@ function callSignUpPostAPI() {
       'content-type': 'application/json'
     },
     body: JSON.stringify({
-      username: username.value,
+      username: email.value,
       password: password.value,
-      nameSurname: name.value + surname.value,
+      nameSurname: fullName.value
     })
   }).then((res) => {
     if (res.ok) {
-
+      router.push({path: '/login'})
     }
   }).catch(() => {
     errorMessage.value = 'Something is wrong!'
@@ -40,16 +34,24 @@ function callSignUpPostAPI() {
 
 function onSignUpSubmit(e) {
   e.preventDefault()
-  if (username.value.length === 0) {
-    errorMessage.value = 'Please enter your username and/or password.'
+  if (fullName.value.length === 0) {
+    errorMessage.value = 'Please enter your full name, email and/or password.'
     return;
   }
-  if (username.value.length < 3) {
+  if (fullName.value.length < 3) {
+    errorMessage.value = 'Full name must have at least 3 characters.'
+    return;
+  }
+  if (email.value.length === 0) {
+    errorMessage.value = 'Please enter full name, email and/or password.'
+    return;
+  }
+  if (email.value.length < 3) {
     errorMessage.value = 'Username must have at least 3 characters.'
     return;
   }
   if (password.value.length === 0) {
-    errorMessage.value = 'Please enter your username and/or password.'
+    errorMessage.value = 'Please enter your full name, email and/or password.'
     return;
   }
   if (password.value.length < 7) {
@@ -57,8 +59,12 @@ function onSignUpSubmit(e) {
     return;
   }
   callSignUpPostAPI()
-
 }
+
+watch([email, password, fullName], () => {
+  errorMessage.value = ''
+})
+
 </script>
 <template>
   <div class="sign-up-page-container">
@@ -72,15 +78,24 @@ function onSignUpSubmit(e) {
         </div>
         <div class="sign-up-email-div">
           <label>
-            Username
+            Full Name*
           </label>
           <div class="sign-up-form-email-input">
             <i class="fa-solid fa-user"/>
-            <input type="text" v-model="username" placeholder="Type your username"/>
+            <input type="text" v-model="fullName" placeholder="Type your full name"/>
+          </div>
+        </div>
+        <div class="sign-up-email-div">
+          <label>
+            E-mail*
+          </label>
+          <div class="sign-up-form-email-input">
+            <i class="fa-solid fa-envelope"/>
+            <input type="email" v-model="email" placeholder="Type your email"/>
           </div>
         </div>
         <div class="sign-up-password-div">
-          <label>Password</label>
+          <label>Password*</label>
           <div class="sign-up-form-password-input">
             <i class="fa-solid fa-key"/>
             <input v-model="password" :type="showPassword ? 'text' : 'password'"
@@ -96,8 +111,8 @@ function onSignUpSubmit(e) {
       </form>
     </div>
   </div>
-
 </template>
+
 <style scoped>
 .sign-up-page-container {
   width: 100%;
@@ -121,7 +136,6 @@ function onSignUpSubmit(e) {
   padding: 40px;
   border-radius: 8px;
   background-color: white;
-  box-shadow: 1px 1px #e6e6e6;
 }
 
 .error-message-div {
@@ -136,6 +150,10 @@ function onSignUpSubmit(e) {
   margin-bottom: 15px;
 }
 
+.error-message-div span {
+  font-size: 14px;
+}
+
 .sign-up-form h1 {
   display: flex;
   align-self: center;
@@ -147,6 +165,7 @@ function onSignUpSubmit(e) {
 .sign-up-email-div {
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 }
 
 .sign-up-email-div label {

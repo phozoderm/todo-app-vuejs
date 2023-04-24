@@ -1,32 +1,75 @@
 <script setup>
-import {ref} from "vue";
+import {inject, ref, watch} from "vue";
 
-const showPassword=ref(false)
+const router = inject('router')
+const email = ref('')
+const password = ref('')
+const showPassword = ref(false)
+const errorMessage = ref('')
+
 function showHide() {
-showPassword.value=!showPassword.value
+  showPassword.value = !showPassword.value
 }
-function callLoginPostAPI(){
-  fetch('')
+
+function callLoginPostAPI() {
+  fetch('http://localhost:1234/session', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json '
+    },
+    body: JSON.stringify({
+      username: email.value,
+      password: password.value
+    })
+  }).then((res) => {
+    if (res.ok) {
+      router.push('/to-do-list')
+    } else {
+      errorMessage.value = 'Email and/or password is incorrect'
+    }
+  }).catch(() => {
+    errorMessage.value = 'Something is wrong!'
+  })
 }
+
+function onLoginSubmit(e) {
+  e.preventDefault()
+  if (email.value.length === 0) {
+    errorMessage.value = 'Please enter email and/or password.'
+    return;
+  }
+  if (password.value.length === 0) {
+    errorMessage.value = 'Please enter your email and/or password.'
+    return;
+  }
+  callLoginPostAPI()
+}
+
+watch([email, password], () => {
+  errorMessage.value = ''
+})
 </script>
 
 <template>
   <div class="login-page-container">
     <div class="login-div">
-      <form class="login-form-div">
+      <form @submit.prevent="onLoginSubmit" class="login-form-div">
         <h1>Login</h1>
+        <div v-if="errorMessage" class="error-message-div">
+          <span>{{ errorMessage }}</span>
+        </div>
         <div class="login-form-input-email-div">
-          <label>Username</label>
+          <label>E-mail</label>
           <div class="login-form-email-input">
-            <i class="fa-solid fa-user"/>
-            <input type="text" placeholder='Type your username'/>
+            <i class="fa-solid fa-envelope"/>
+            <input v-model="email" type="email" placeholder='Type your email'/>
           </div>
         </div>
         <div class="login-form-input-password-div">
           <label>Password</label>
           <div class="login-form-password-input">
             <i class="fa-solid fa-key"/>
-            <input :type="showPassword ? 'text' : 'password'" placeholder='Type your password'/>
+            <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder='Type your password'/>
             <i class="fa-solid" :class="{'fa-eye': !showPassword, 'fa-eye-slash': showPassword}" @click="showHide"/>
           </div>
         </div>
@@ -44,6 +87,22 @@ function callLoginPostAPI(){
 </template>
 
 <style scoped>
+.error-message-div {
+  height: 40px;
+  color: #b30000;
+  background-color: #fff1f1;
+  border: 1px solid #b30000;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.error-message-div span {
+  font-size: 14px;
+}
+
 .login-form-password-input i:nth-child(3) {
   right: 0;
 }
