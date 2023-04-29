@@ -1,7 +1,6 @@
 <script setup>
-import {inject, ref, watch} from "vue";
+import { ref, watch} from "vue";
 
-const router = inject('router')
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
@@ -23,7 +22,11 @@ function callLoginPostAPI() {
     })
   }).then((res) => {
     if (res.ok) {
-      router.push('/to-do-list')
+      res.json().then((responseBody) => {
+        localStorage.setItem('nameSurname', responseBody.user.nameSurname)
+        localStorage.setItem('jwt', responseBody.jwt)
+        window.location.reload()
+      })
     } else {
       errorMessage.value = 'Email and/or password is incorrect'
     }
