@@ -35,7 +35,7 @@ function logOut() {
 
 </template>
 
-<style>
+<style scoped>
 
 .navbar-container {
   width: 100%;

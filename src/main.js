@@ -27,7 +27,6 @@ export const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-    console.log("beforeEach", jwt, isLoggedIn, to)
     if (isLoggedIn && to.path === '/login') {
         return {path: '/to-do-list'}
     }
